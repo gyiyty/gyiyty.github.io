@@ -14,7 +14,7 @@ future: true
 # SNS settings
 RSS: false
 # weibo_username: huxpro
-# zhihu_username: huxpro
+# zhihu_username: huxproA
 # github_username: huxpro
 # twitter_username: huxpro
 #facebook_username:  huxpro
@@ -53,13 +53,13 @@ kramdown:
   input: GFM # use Github Flavored Markdown !important
   syntax_highlighter_opts:
     span:
-      line_numbers: false
+      line_numbers: false # 行内代码块不显示行号
     block:
-      line_numbers: true
+      line_numbers: true # 代码块显示行号
       start_line: 1
 
 # Disqus settings
-disqus_username: hux
+# disqus_username: hux
 
 # Netease settings
 netease_comment: false
@@ -69,13 +69,13 @@ netease_comment: false
 # ba_track_id: [your track id]
 
 # Google Analytics
-ga_track_id: "UA-49627206-1" # Format: UA-xxxxxx-xx
-ga_domain: huangxuan.me
+# ga_track_id: "UA-49627206-1" # Format: UA-xxxxxx-xx
+# ga_domain: huangxuan.me
 
 # Sidebar settings
-sidebar: false # whether or not using Sidebar.
+sidebar: true # whether or not using Sidebar.
 sidebar-about-description: ""
-sidebar-avatar: https://github.com/Huxpro.png # use absolute URL, seeing it's used in both `/` and `/about/`
+sidebar-avatar: https://github.com/giyity.png # use absolute URL, seeing it's used in both `/` and `/about/`
 
 # Featured Tags
 featured-tags: true # whether or not using Feature-Tags
@@ -86,7 +86,7 @@ chrome-tab-theme-color: "#000000"
 service-worker: true
 
 # MathJax rendering for layout:page (e.g. post preview)
-page-mathjax: false
+page-mathjax: true
 
 # Friends
 friends:
