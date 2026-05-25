@@ -467,6 +467,15 @@ h3 {
   color: #8d120d;
 }
 
+.prose mark {
+  border-radius: 5px;
+  padding: 0.08rem 0.18rem;
+  background: linear-gradient(180deg, rgba(242, 169, 0, 0.28), rgba(242, 169, 0, 0.18));
+  color: inherit;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
 .prose pre {
   overflow-x: auto;
   border-radius: 7px;
