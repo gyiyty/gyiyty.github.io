@@ -48,7 +48,7 @@ const next = index > 0 ? notes[index - 1] : undefined;
               {headings
                 .filter((heading) => heading.depth >= 2 && heading.depth <= 3)
                 .map((heading) => (
-                  <a class={`toc-depth-${heading.depth}`} href={`#${heading.slug}`}>
+                  <a class={`toc-depth-${heading.depth}`} href={`#${heading.slug}`} data-toc-link={heading.slug}>
                     {heading.text}
                   </a>
                 ))}
@@ -66,4 +66,73 @@ const next = index > 0 ? notes[index - 1] : undefined;
       {next ? <a href={`/notes/${next.slug}/`}><span>下一篇</span>{next.data.title}</a> : <span></span>}
     </nav>
   </article>
+
+  <script>
+    type TocItem = { id: string; heading: HTMLElement; link: HTMLAnchorElement };
+
+    const tocLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>("[data-toc-link]"));
+    const headings = tocLinks.reduce<TocItem[]>((items, link) => {
+        const id = link.getAttribute("data-toc-link");
+        const heading = id ? document.getElementById(id) : null;
+        if (id && heading instanceof HTMLElement) {
+          items.push({ id, heading, link });
+        }
+        return items;
+      }, []);
+
+    function setActiveToc(id: string) {
+      for (const item of headings) {
+        const isActive = item.id === id;
+        item.link.classList.toggle("is-active", isActive);
+        if (isActive) {
+          item.link.setAttribute("aria-current", "location");
+        } else {
+          item.link.removeAttribute("aria-current");
+        }
+      }
+    }
+
+    function updateActiveToc() {
+      if (headings.length === 0) return;
+
+      const readLine = window.innerHeight * 0.28;
+      let active = headings[0];
+      for (const item of headings) {
+        if (item.heading.getBoundingClientRect().top <= readLine) {
+          active = item;
+        } else {
+          break;
+        }
+      }
+      setActiveToc(active.id);
+    }
+
+    if (headings.length > 0) {
+      const initialId = decodeURIComponent(window.location.hash.slice(1));
+      if (initialId && headings.some((item) => item.id === initialId)) {
+        setActiveToc(initialId);
+      } else {
+        updateActiveToc();
+      }
+
+      let ticking = false;
+      window.addEventListener(
+        "scroll",
+        () => {
+          if (ticking) return;
+          ticking = true;
+          window.requestAnimationFrame(() => {
+            updateActiveToc();
+            ticking = false;
+          });
+        },
+        { passive: true }
+      );
+
+      window.addEventListener("hashchange", () => {
+        const id = decodeURIComponent(window.location.hash.slice(1));
+        if (id && headings.some((item) => item.id === id)) setActiveToc(id);
+      });
+    }
+  </script>
 </BaseLayout>

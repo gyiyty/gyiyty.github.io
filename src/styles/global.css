@@ -606,12 +606,30 @@ h3 {
 }
 
 .toc a {
+  display: block;
+  border-left: 3px solid transparent;
+  border-radius: 5px;
+  padding: 0.22rem 0.45rem;
   color: var(--muted);
   font-size: 0.9rem;
+  transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+
+.toc a:hover,
+.toc a:focus-visible {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.toc a.is-active {
+  border-left-color: var(--red-hot);
+  background: rgba(252, 89, 67, 0.14);
+  color: #fff;
+  font-weight: 800;
 }
 
 .toc-depth-3 {
-  padding-left: 0.8rem;
+  margin-left: 0.75rem;
 }
 
 .note-pagination {
