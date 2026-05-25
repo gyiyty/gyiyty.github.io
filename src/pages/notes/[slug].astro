@@ -95,16 +95,17 @@ const next = index > 0 ? notes[index - 1] : undefined;
     function updateActiveToc() {
       if (headings.length === 0) return;
 
-      const readLine = window.innerHeight * 0.28;
-      let active = headings[0];
+      let active: TocItem | undefined;
+      let lastPassed = headings[0];
       for (const item of headings) {
-        if (item.heading.getBoundingClientRect().top <= readLine) {
+        const top = item.heading.getBoundingClientRect().top;
+        if (top >= 0 && top < window.innerHeight) {
           active = item;
-        } else {
           break;
         }
+        if (top < 0) lastPassed = item;
       }
-      setActiveToc(active.id);
+      setActiveToc((active ?? lastPassed).id);
     }
 
     if (headings.length > 0) {
