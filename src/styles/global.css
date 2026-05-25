@@ -109,11 +109,11 @@ code {
 }
 
 .brand-mark {
-  width: 0.9rem;
-  height: 1.8rem;
-  transform: skew(-12deg);
-  background: var(--red);
-  box-shadow: 0.4rem 0 0 #fff, 0.8rem 0 0 var(--blue);
+  width: 2.35rem;
+  height: 2.35rem;
+  flex: 0 0 auto;
+  border-radius: 7px;
+  object-fit: cover;
 }
 
 .site-nav {

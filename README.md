@@ -18,7 +18,7 @@
 src/content/notes/      导入后的公开笔记
 public/notes-assets/    导入后的公开附件
 public/about/           关于页作者图片，可在 siteConfig.about.gallery 中引用
-wallpaper/              原始视觉参考图
+wallpaper/              原始视觉参考图，包含 header 图标源图 nina.png
 public/wallpaper/       构建时生成的优化图片
 scripts/import-notes.mjs
 scripts/prepare-assets.mjs
@@ -130,6 +130,7 @@ jkofbr.top
 ## 注意事项
 
 - `wallpaper` 中保留原图；`npm.cmd run build` 会生成 `public/wallpaper` 下的 WebP 优化图。
+- Header 左侧图标源图是 `wallpaper/nina.png`；构建时会去除近白背景并生成 `public/wallpaper/nina.webp`，页面引用生成后的 `/wallpaper/nina.webp`。
 - 关于页作者图片不经过 wallpaper 优化流程；如需展示自选图片，直接放到 `public/about/` 并更新 `siteConfig.about.gallery`。
 - `public/wallpaper`、`dist`、`.astro`、`node_modules` 不进入版本控制。
 - `AGENTS.md` 是本地代理协作说明，已被 `.gitignore` 忽略。
