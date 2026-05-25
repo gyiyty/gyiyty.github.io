@@ -1,32 +1,62 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { siteConfig } from "../lib/site";
+
+const about = siteConfig.about;
+const pageDescription = about.intro || `关于 ${siteConfig.authorName} 和这个知识网站。`;
+const pageImage = about.gallery?.[0]?.src || "/wallpaper/about-band.webp";
 ---
 
-<BaseLayout title="关于" description={`关于 ${siteConfig.authorName} 和这个知识网站。`} image="/wallpaper/about-band.webp">
+<BaseLayout title="关于" description={pageDescription} image={pageImage}>
   <section class="about-hero">
-    <picture>
-      <source srcset="/wallpaper/about-band-mobile.webp" media="(max-width: 760px)" />
-      <img src="/wallpaper/about-band.webp" alt="" aria-hidden="true" />
-    </picture>
-    <div class="hero-overlay"></div>
     <div class="about-content">
-      <p class="eyebrow">About</p>
-      <h1>{siteConfig.authorName}</h1>
-      <p>这里用于整理公开笔记、长期想法和学习记录。内容从 Obsidian 中筛选发布，保留 Markdown 的写作体验，也方便在网页上按标题和标签检索。</p>
+      <p class="eyebrow">{about.eyebrow}</p>
+      <h1>{about.title || siteConfig.authorName}</h1>
+      <p>{about.intro}</p>
+      {
+        about.highlights?.length > 0 && (
+          <ul class="about-highlights" aria-label="作者关键词">
+            {about.highlights.map((highlight) => (
+              <li>{highlight}</li>
+            ))}
+          </ul>
+        )
+      }
+      {
+        about.links?.length > 0 && (
+          <div class="about-links" aria-label="作者链接">
+            {about.links.map((link) => (
+              <a href={link.href}>{link.label}</a>
+            ))}
+          </div>
+        )
+      }
     </div>
+    {
+      about.gallery?.length > 0 && (
+        <div class="about-gallery" aria-label="作者图片">
+          {about.gallery.map((image) => (
+            <figure>
+              <img src={image.src} alt={image.alt} loading="lazy" />
+              {image.caption && <figcaption>{image.caption}</figcaption>}
+            </figure>
+          ))}
+        </div>
+      )
+    }
   </section>
 
-  <section class="content-wrap about-grid">
-    <div>
-      <p class="eyebrow">Workflow</p>
-      <h2>发布方式</h2>
-      <p>在 Obsidian 笔记中添加 <code>#publish</code>，运行导入命令后，网站会自动清洗类型标签、复制附件并生成页面。</p>
-    </div>
-    <div>
-      <p class="eyebrow">Stack</p>
-      <h2>技术栈</h2>
-      <p>Astro 负责静态构建，KaTeX 渲染公式，GitHub Pages 托管页面，RSS 和 sitemap 用于订阅与索引。</p>
-    </div>
-  </section>
+  {
+    about.sections?.length > 0 && (
+      <section class="content-wrap about-grid" aria-label="作者档案">
+        {about.sections.map((section) => (
+          <div>
+            <p class="eyebrow">{section.eyebrow}</p>
+            <h2>{section.title}</h2>
+            <p>{section.body}</p>
+          </div>
+        ))}
+      </section>
+    )
+  }
 </BaseLayout>
