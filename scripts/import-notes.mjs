@@ -38,11 +38,6 @@ function slugify(value) {
     .toLowerCase() || "note";
 }
 
-function titleFromBody(body, fallback) {
-  const heading = body.match(/^#\s+(.+)$/m);
-  return heading?.[1]?.trim() || fallback;
-}
-
 function normalizeFrontmatterTags(value) {
   if (!value) return [];
   if (Array.isArray(value)) return value.map(ensureHashTag).filter(Boolean);
@@ -216,12 +211,14 @@ async function importNotes() {
     const normalizedTags = allTags.map(normalizeTag);
     if (!normalizedTags.includes(publishTag)) continue;
 
-    const title = parsed.data.title || titleFromBody(parsed.content, path.basename(filePath, path.extname(filePath)));
+    const sourceName = path.basename(filePath, path.extname(filePath));
+    const title = parsed.data.title || sourceName;
     const publicTags = cleanTags(allTags);
-    let noteSlug = slugify(title);
+    const baseSlug = slugify(sourceName);
+    let noteSlug = baseSlug;
     let suffix = 2;
     while (usedSlugs.has(noteSlug)) {
-      noteSlug = `${slugify(title)}-${suffix}`;
+      noteSlug = `${baseSlug}-${suffix}`;
       suffix += 1;
     }
     usedSlugs.add(noteSlug);

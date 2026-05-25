@@ -1,5 +1,5 @@
 ---
-title: 正文
+title: Paxos算法
 tags:
   - 计算机
   - 云计算
