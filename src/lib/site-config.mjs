@@ -4,9 +4,9 @@ export const siteConfig = {
   authorName: "YPC",
   about: {
     eyebrow: "About the Author",
-    title: "YPC",
+    title: "jkofbr",
     intro:
-      "我在这里整理公开笔记、长期想法和学习记录。内容从 Obsidian 中筛选发布，关注技术、知识管理和持续写作。",
+      "吾生也有涯，而知也无涯，以有涯随无涯，殆已。",
     meta: [
       {
         label: "GitHub",
@@ -21,17 +21,17 @@ export const siteConfig = {
       {
         src: "/wallpaper/about-band.webp",
         alt: "红色光影背景",
-        caption: "写作现场"
+        caption: "😤"
       },
       {
         src: "/wallpaper/hero-home.webp",
         alt: "站点首页背景图",
-        caption: "知识库"
+        caption: "😮"
       },
       {
         src: "/wallpaper/hero-note.webp",
         alt: "文章页背景图",
-        caption: "公开笔记"
+        caption: "😝"
       }
     ],
     sections: [
