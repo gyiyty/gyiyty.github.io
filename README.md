@@ -57,6 +57,14 @@ npm.cmd install
 npm.cmd run import:notes
 ```
 
+删除已导入文章及其未被其他文章引用的附件：
+
+```powershell
+npm.cmd run delete:note -- paxos算法
+```
+
+参数可以是导入后的 slug、文章标题或源 Markdown 文件名。该命令只删除仓库内的导入结果，不会修改 Obsidian Vault。
+
 本地开发预览：
 
 ```powershell

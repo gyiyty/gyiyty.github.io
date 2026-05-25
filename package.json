@@ -8,6 +8,7 @@
     "build": "npm run prepare:assets && node scripts/astro-run.mjs check && node scripts/astro-run.mjs build",
     "preview": "node scripts/astro-run.mjs preview",
     "import:notes": "node scripts/import-notes.mjs",
+    "delete:note": "node scripts/delete-note.mjs",
     "prepare:assets": "node scripts/prepare-assets.mjs"
   },
   "dependencies": {
