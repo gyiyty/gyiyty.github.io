@@ -97,6 +97,14 @@ https://<username>.github.io
 
 如果改成项目页，例如 `https://<username>.github.io/<repo>/`，需要同步调整 `src/lib/site-config.mjs` 中的 `base`，并检查 GitHub Actions 中的 `SITE_URL`。
 
+GitHub Pages 的发布源应设置为 `GitHub Actions`。如果 Actions 日志中出现 `actions/jekyll-build-pages`，说明 Pages Source 被设成了分支发布，GitHub 正在用 Jekyll 扫描 Astro 源码；需要在仓库 `Settings -> Pages -> Build and deployment -> Source` 中切回 `GitHub Actions`。
+
+自定义域名由 `public/CNAME` 发布到 `dist/CNAME`，当前域名是：
+
+```text
+jkofbr.top
+```
+
 ## 注意事项
 
 - `wallpaper` 中保留原图；`npm.cmd run build` 会生成 `public/wallpaper` 下的 WebP 优化图。
