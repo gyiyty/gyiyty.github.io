@@ -7,15 +7,14 @@ export const siteConfig = {
     title: "YPC",
     intro:
       "我在这里整理公开笔记、长期想法和学习记录。内容从 Obsidian 中筛选发布，关注技术、知识管理和持续写作。",
-    highlights: ["Obsidian 写作", "长期笔记", "技术学习", "公开沉淀"],
-    links: [
+    meta: [
       {
         label: "GitHub",
-        href: "https://github.com/"
+        value: "github.com"
       },
       {
         label: "Email",
-        href: "mailto:hello@example.com"
+        value: "hello@example.com"
       }
     ],
     gallery: [

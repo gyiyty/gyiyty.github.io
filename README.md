@@ -9,7 +9,7 @@
 - 支持 Obsidian 常见 Markdown 写法、GFM 表格、任务列表、代码块。
 - 支持行内公式 `$...$` 和块级公式 `$$...$$`，通过 KaTeX 渲染。
 - 支持常见 Obsidian 附件引用，导入时复制到 `public/notes-assets`。
-- 提供文章列表、文章详情、tag 聚合、标题搜索、关于页、404、RSS 和 sitemap。
+- 提供文章列表、文章详情、tag 聚合、标题搜索、配置化作者关于页、404、RSS 和 sitemap。
 - GitHub Actions 自动构建并部署到 GitHub Pages。
 
 ## 目录
@@ -17,6 +17,7 @@
 ```text
 src/content/notes/      导入后的公开笔记
 public/notes-assets/    导入后的公开附件
+public/about/           关于页作者图片，可在 siteConfig.about.gallery 中引用
 wallpaper/              原始视觉参考图
 public/wallpaper/       构建时生成的优化图片
 scripts/import-notes.mjs
@@ -33,6 +34,21 @@ export const siteConfig = {
   siteTitle: "个人知识库",
   siteDescription: "从 Obsidian 发布的长期笔记、想法和技术记录。",
   authorName: "YPC",
+  about: {
+    eyebrow: "About the Author",
+    title: "YPC",
+    intro: "作者简介。",
+    meta: [
+      { label: "GitHub", value: "github.com" },
+      { label: "Email", value: "hello@example.com" }
+    ],
+    gallery: [
+      { src: "/about/photo-1.jpg", alt: "图片描述", caption: "图片标题" }
+    ],
+    sections: [
+      { eyebrow: "Focus", title: "关注主题", body: "简短说明。" }
+    ]
+  },
   siteUrl: process.env.SITE_URL || "https://username.github.io",
   base: "/",
   vaultPath: "E:/ypc/mynote/cardbox",
@@ -42,6 +58,12 @@ export const siteConfig = {
 ```
 
 如需更换 Obsidian Vault 路径、站点标题、作者名或隐藏 tag，修改这个文件即可。
+
+关于页 `/about/` 的作者信息也由 `siteConfig.about` 控制：
+
+- `intro` 控制首屏作者简介，`meta` 控制表格式纯文字作者信息；每一项都是 `{ label, value }`，可自由添加、删除或排序。
+- `gallery` 控制右侧图片拼贴，图片建议放在 `public/about/`，并用 `/about/文件名` 引用。
+- `sections` 控制下方简洁档案卡片，例如关注主题、写作方式等。
 
 ## 使用
 
@@ -108,5 +130,6 @@ jkofbr.top
 ## 注意事项
 
 - `wallpaper` 中保留原图；`npm.cmd run build` 会生成 `public/wallpaper` 下的 WebP 优化图。
+- 关于页作者图片不经过 wallpaper 优化流程；如需展示自选图片，直接放到 `public/about/` 并更新 `siteConfig.about.gallery`。
 - `public/wallpaper`、`dist`、`.astro`、`node_modules` 不进入版本控制。
 - `AGENTS.md` 是本地代理协作说明，已被 `.gitignore` 忽略。

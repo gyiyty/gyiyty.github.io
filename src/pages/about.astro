@@ -5,6 +5,7 @@ import { siteConfig } from "../lib/site";
 const about = siteConfig.about;
 const pageDescription = about.intro || `关于 ${siteConfig.authorName} 和这个知识网站。`;
 const pageImage = about.gallery?.[0]?.src || "/wallpaper/about-band.webp";
+const aboutMeta = (about.meta ?? []) as { label: string; value: string }[];
 ---
 
 <BaseLayout title="关于" description={pageDescription} image={pageImage}>
@@ -14,21 +15,15 @@ const pageImage = about.gallery?.[0]?.src || "/wallpaper/about-band.webp";
       <h1>{about.title || siteConfig.authorName}</h1>
       <p>{about.intro}</p>
       {
-        about.highlights?.length > 0 && (
-          <ul class="about-highlights" aria-label="作者关键词">
-            {about.highlights.map((highlight) => (
-              <li>{highlight}</li>
+        aboutMeta.length > 0 && (
+          <dl class="about-meta" aria-label="作者信息">
+            {aboutMeta.map((item) => (
+              <div>
+                <dt>{item.label}</dt>
+                <dd>{item.value}</dd>
+              </div>
             ))}
-          </ul>
-        )
-      }
-      {
-        about.links?.length > 0 && (
-          <div class="about-links" aria-label="作者链接">
-            {about.links.map((link) => (
-              <a href={link.href}>{link.label}</a>
-            ))}
-          </div>
+          </dl>
         )
       }
     </div>
