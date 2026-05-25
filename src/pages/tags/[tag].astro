@@ -6,7 +6,7 @@ import { collectTags, displayTag, formatDate, makeTagSlug, publicNotes, sortByDa
 export async function getStaticPaths() {
   const notes = publicNotes(await getCollection("notes"));
   return collectTags(notes).map(({ tag }) => ({
-    params: { tag: makeTagSlug(tag) },
+    params: { tag },
     props: { tag }
   }));
 }
