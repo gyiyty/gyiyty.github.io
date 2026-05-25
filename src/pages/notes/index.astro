@@ -1,0 +1,42 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { displayTag, formatDate, makeTagSlug, publicNotes, sortByDateDesc } from "../../lib/site";
+
+const notes = sortByDateDesc(publicNotes(await getCollection("notes")));
+---
+
+<BaseLayout title="文章" description="所有公开发布的 Obsidian 笔记。">
+  <section class="page-hero compact-hero">
+    <p class="eyebrow">Archive</p>
+    <h1>文章</h1>
+    <p>所有带 <code>#publish</code> 的公开笔记会出现在这里。</p>
+  </section>
+  <section class="content-wrap">
+    <div class="note-list full-list">
+      {
+        notes.length > 0 ? (
+          notes.map((note) => (
+            <article class="note-card">
+              <a href={`/notes/${note.slug}/`}>
+                <span class="note-date">{formatDate(note.data.date)}</span>
+                <h2>{note.data.title}</h2>
+                {note.data.description && <p>{note.data.description}</p>}
+              </a>
+              <div class="tag-row">
+                {note.data.tags.map((tag) => (
+                  <a href={`/tags/${makeTagSlug(tag)}/`}>#{displayTag(tag)}</a>
+                ))}
+              </div>
+            </article>
+          ))
+        ) : (
+          <div class="empty-state">
+            <h2>暂无文章</h2>
+            <p>运行 <code>npm run import:notes</code> 后，这里会显示公开笔记。</p>
+          </div>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,44 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { collectTags, displayTag, formatDate, makeTagSlug, publicNotes, sortByDateDesc, tagFromSlug } from "../../lib/site";
+
+export async function getStaticPaths() {
+  const notes = publicNotes(await getCollection("notes"));
+  return collectTags(notes).map(({ tag }) => ({
+    params: { tag: makeTagSlug(tag) },
+    props: { tag }
+  }));
+}
+
+const tag = Astro.props.tag || tagFromSlug(Astro.params.tag ?? "");
+const notes = sortByDateDesc(publicNotes(await getCollection("notes"))).filter((note) => note.data.tags.includes(tag));
+---
+
+<BaseLayout title={`#${displayTag(tag)}`} description={`标签 #${displayTag(tag)} 下的文章。`}>
+  <section class="page-hero compact-hero">
+    <p class="eyebrow">Tag</p>
+    <h1>#{displayTag(tag)}</h1>
+    <p>{notes.length} 篇文章</p>
+  </section>
+  <section class="content-wrap">
+    <div class="note-list full-list">
+      {
+        notes.map((note) => (
+          <article class="note-card">
+            <a href={`/notes/${note.slug}/`}>
+              <span class="note-date">{formatDate(note.data.date)}</span>
+              <h2>{note.data.title}</h2>
+              {note.data.description && <p>{note.data.description}</p>}
+            </a>
+            <div class="tag-row">
+              {note.data.tags.map((item) => (
+                <a href={`/tags/${makeTagSlug(item)}/`}>#{displayTag(item)}</a>
+              ))}
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>

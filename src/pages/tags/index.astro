@@ -1,0 +1,34 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { collectTags, displayTag, makeTagSlug, publicNotes } from "../../lib/site";
+
+const tags = collectTags(publicNotes(await getCollection("notes")));
+---
+
+<BaseLayout title="Tags" description="按标签浏览公开笔记。">
+  <section class="page-hero compact-hero">
+    <p class="eyebrow">Tags</p>
+    <h1>主题标签</h1>
+    <p>类型标签会在导入时隐藏，这里只保留公开浏览需要的主题。</p>
+  </section>
+  <section class="content-wrap">
+    <div class="tag-cloud tag-cloud-large">
+      {
+        tags.length > 0 ? (
+          tags.map(({ tag, count }) => (
+            <a href={`/tags/${makeTagSlug(tag)}/`}>
+              #{displayTag(tag)}
+              <span>{count}</span>
+            </a>
+          ))
+        ) : (
+          <div class="empty-state">
+            <h2>暂无标签</h2>
+            <p>导入公开笔记后，这里会按 tag 聚合文章。</p>
+          </div>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>

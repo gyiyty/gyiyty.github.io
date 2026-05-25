@@ -1,0 +1,78 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { collectTags, formatDate, publicNotes, sortByDateDesc } from "../lib/site";
+
+const notes = sortByDateDesc(publicNotes(await getCollection("notes")));
+const tags = collectTags(notes);
+const searchIndex = notes.map((note) => ({
+  title: note.data.title,
+  url: `/notes/${note.slug}/`,
+  date: formatDate(note.data.date),
+  description: note.data.description ?? "",
+  tags: note.data.tags
+}));
+---
+
+<BaseLayout title="搜索" description="按标题或 tag 搜索公开笔记。">
+  <section class="page-hero compact-hero">
+    <p class="eyebrow">Search</p>
+    <h1>搜索</h1>
+    <p>输入标题关键词，或选择一个 tag 过滤文章。</p>
+  </section>
+
+  <section class="search-shell" data-search-root>
+    <div class="search-controls">
+      <label>
+        <span>标题</span>
+        <input data-search-input type="search" placeholder="搜索文章标题" autocomplete="off" />
+      </label>
+      <label>
+        <span>Tag</span>
+        <select data-tag-select>
+          <option value="">全部标签</option>
+          {tags.map(({ tag, count }) => <option value={tag}>#{tag} ({count})</option>)}
+        </select>
+      </label>
+    </div>
+    <div class="search-results" data-search-results></div>
+  </section>
+
+  <script is:inline define:vars={{ searchIndex }}>
+    const input = document.querySelector("[data-search-input]");
+    const select = document.querySelector("[data-tag-select]");
+    const results = document.querySelector("[data-search-results]");
+
+    function render() {
+      const query = input.value.trim().toLowerCase();
+      const tag = select.value;
+      const matches = searchIndex.filter((note) => {
+        const titleMatch = !query || note.title.toLowerCase().includes(query);
+        const tagMatch = !tag || note.tags.includes(tag);
+        return titleMatch && tagMatch;
+      });
+
+      results.innerHTML = matches.length
+        ? matches
+            .map(
+              (note) => `
+                <article class="note-card">
+                  <a href="${note.url}">
+                    <span class="note-date">${note.date || ""}</span>
+                    <h2>${note.title}</h2>
+                    ${note.description ? `<p>${note.description}</p>` : ""}
+                  </a>
+                  <div class="tag-row">
+                    ${note.tags.map((item) => `<a href="/tags/${encodeURIComponent(item)}/">#${item}</a>`).join("")}
+                  </div>
+                </article>`
+            )
+            .join("")
+        : `<div class="empty-state"><h2>没有匹配结果</h2><p>换一个标题关键词或 tag 试试。</p></div>`;
+    }
+
+    input.addEventListener("input", render);
+    select.addEventListener("change", render);
+    render();
+  </script>
+</BaseLayout>

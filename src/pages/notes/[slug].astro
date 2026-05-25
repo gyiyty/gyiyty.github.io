@@ -1,0 +1,69 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { displayTag, formatDate, makeTagSlug, publicNotes, sortByDateDesc } from "../../lib/site";
+
+export async function getStaticPaths() {
+  const notes = publicNotes(await getCollection("notes"));
+  return notes.map((note) => ({ params: { slug: note.slug }, props: { note } }));
+}
+
+const { note } = Astro.props;
+const { Content, headings } = await render(note);
+const notes = sortByDateDesc(publicNotes(await getCollection("notes")));
+const index = notes.findIndex((item) => item.slug === note.slug);
+const previous = index >= 0 ? notes[index + 1] : undefined;
+const next = index > 0 ? notes[index - 1] : undefined;
+---
+
+<BaseLayout title={note.data.title} description={note.data.description ?? note.data.title} image="/wallpaper/hero-note.webp">
+  <article>
+    <header class="note-hero">
+      <picture>
+        <source srcset="/wallpaper/hero-note-mobile.webp" media="(max-width: 760px)" />
+        <img src="/wallpaper/hero-note.webp" alt="" aria-hidden="true" />
+      </picture>
+      <div class="hero-overlay"></div>
+      <div class="note-hero-content">
+        <p class="eyebrow">Note</p>
+        <h1>{note.data.title}</h1>
+        <div class="note-meta">
+          {note.data.date && <time datetime={note.data.date.toISOString()}>{formatDate(note.data.date)}</time>}
+          {note.data.sourcePath && <span>{note.data.sourcePath}</span>}
+        </div>
+        <div class="tag-row">
+          {note.data.tags.map((tag) => (
+            <a href={`/tags/${makeTagSlug(tag)}/`}>#{displayTag(tag)}</a>
+          ))}
+        </div>
+      </div>
+    </header>
+
+    <div class="article-shell">
+      {
+        headings.length > 1 && (
+          <aside class="toc" aria-label="文章目录">
+            <strong>目录</strong>
+            <nav>
+              {headings
+                .filter((heading) => heading.depth >= 2 && heading.depth <= 3)
+                .map((heading) => (
+                  <a class={`toc-depth-${heading.depth}`} href={`#${heading.slug}`}>
+                    {heading.text}
+                  </a>
+                ))}
+            </nav>
+          </aside>
+        )
+      }
+      <div class="prose">
+        <Content />
+      </div>
+    </div>
+
+    <nav class="note-pagination" aria-label="文章翻页">
+      {previous ? <a href={`/notes/${previous.slug}/`}><span>上一篇</span>{previous.data.title}</a> : <span></span>}
+      {next ? <a href={`/notes/${next.slug}/`}><span>下一篇</span>{next.data.title}</a> : <span></span>}
+    </nav>
+  </article>
+</BaseLayout>

@@ -1,0 +1,81 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { collectTags, displayTag, formatDate, makeTagSlug, publicNotes, siteConfig, sortByDateDesc } from "../lib/site";
+
+const notes = sortByDateDesc(publicNotes(await getCollection("notes")));
+const latestNotes = notes.slice(0, 6);
+const topTags = collectTags(notes).slice(0, 12);
+---
+
+<BaseLayout title={siteConfig.siteTitle} description={siteConfig.siteDescription} bodyClass="home-page">
+  <section class="hero hero-home">
+    <picture>
+      <source srcset="/wallpaper/hero-home-mobile.webp" media="(max-width: 760px)" />
+      <img src="/wallpaper/hero-home.webp" alt="" aria-hidden="true" />
+    </picture>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <p class="eyebrow">Obsidian Notes / Personal Archive</p>
+      <h1>{siteConfig.siteTitle}</h1>
+      <p class="hero-copy">{siteConfig.siteDescription}</p>
+      <div class="hero-actions">
+        <a class="button button-primary" href="/notes/">阅读文章</a>
+        <a class="button button-secondary" href="/search/">搜索笔记</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-grid">
+    <div class="section-heading">
+      <p class="eyebrow">Latest</p>
+      <h2>最新文章</h2>
+    </div>
+    <div class="note-list">
+      {
+        latestNotes.length > 0 ? (
+          latestNotes.map((note) => (
+            <article class="note-card">
+              <a href={`/notes/${note.slug}/`}>
+                <span class="note-date">{formatDate(note.data.date)}</span>
+                <h3>{note.data.title}</h3>
+                {note.data.description && <p>{note.data.description}</p>}
+              </a>
+              <div class="tag-row">
+                {note.data.tags.map((tag) => (
+                  <a href={`/tags/${makeTagSlug(tag)}/`}>#{displayTag(tag)}</a>
+                ))}
+              </div>
+            </article>
+          ))
+        ) : (
+          <div class="empty-state">
+            <h3>还没有公开笔记</h3>
+            <p>在 Obsidian 笔记中添加 <code>#publish</code>，然后运行 <code>npm run import:notes</code>。</p>
+          </div>
+        )
+      }
+    </div>
+  </section>
+
+  <section class="tag-band">
+    <div>
+      <p class="eyebrow">Tags</p>
+      <h2>按主题浏览</h2>
+    </div>
+    <div class="tag-cloud">
+      {
+        topTags.length > 0 ? (
+          topTags.map(({ tag, count }) => (
+            <a href={`/tags/${makeTagSlug(tag)}/`}>
+              #{displayTag(tag)}
+              <span>{count}</span>
+            </a>
+          ))
+        ) : (
+          <span class="muted">导入公开笔记后会显示标签。</span>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>
