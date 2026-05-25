@@ -108,17 +108,47 @@ const next = index > 0 ? notes[index - 1] : undefined;
     }
 
     if (headings.length > 0) {
+      let lockedTocId: string | null = null;
+      let unlockTimer: number | undefined;
+
+      function hasHeading(id: string) {
+        return headings.some((item) => item.id === id);
+      }
+
+      function lockToc(id: string) {
+        if (!hasHeading(id)) return;
+        lockedTocId = id;
+        setActiveToc(id);
+        window.clearTimeout(unlockTimer);
+        unlockTimer = window.setTimeout(() => {
+          lockedTocId = null;
+          updateActiveToc();
+        }, 900);
+      }
+
+      function unlockForManualReading() {
+        if (!lockedTocId) return;
+        window.clearTimeout(unlockTimer);
+        lockedTocId = null;
+        updateActiveToc();
+      }
+
       const initialId = decodeURIComponent(window.location.hash.slice(1));
-      if (initialId && headings.some((item) => item.id === initialId)) {
+      if (initialId && hasHeading(initialId)) {
         setActiveToc(initialId);
       } else {
         updateActiveToc();
+      }
+
+      for (const item of headings) {
+        item.link.addEventListener("click", () => lockToc(item.id));
       }
 
       let ticking = false;
       window.addEventListener(
         "scroll",
         () => {
+          if (lockedTocId) return;
           if (ticking) return;
           ticking = true;
           window.requestAnimationFrame(() => {
@@ -129,9 +159,17 @@ const next = index > 0 ? notes[index - 1] : undefined;
         { passive: true }
       );
 
+      window.addEventListener("wheel", unlockForManualReading, { passive: true });
+      window.addEventListener("touchmove", unlockForManualReading, { passive: true });
+      window.addEventListener("keydown", (event) => {
+        if (["ArrowDown", "ArrowUp", "PageDown", "PageUp", "Home", "End", " "].includes(event.key)) {
+          unlockForManualReading();
+        }
+      });
+
       window.addEventListener("hashchange", () => {
         const id = decodeURIComponent(window.location.hash.slice(1));
-        if (id && headings.some((item) => item.id === id)) setActiveToc(id);
+        if (id) lockToc(id);
       });
     }
   </script>
